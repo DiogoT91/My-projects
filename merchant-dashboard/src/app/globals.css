@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 24 100% 97%;
+    --accent-foreground: 24 80% 35%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 24 95% 53%;
+    --radius: 0.625rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply tracking-tight text-foreground;
+  }
+}
+
+@layer components {
+  /* —— Layout do dashboard —— */
+  .dashboard-shell {
+    @apply flex h-screen overflow-hidden bg-muted/40;
+  }
+
+  .page-main {
+    @apply flex-1 overflow-y-auto bg-gradient-to-b from-muted/30 to-background p-6 md:p-8;
+  }
+
+  .page-container {
+    @apply mx-auto max-w-7xl space-y-6;
+  }
+
+  /* —— Cards —— */
+  .panel-card {
+    @apply rounded-xl border border-border/80 bg-card shadow-sm transition-shadow duration-200 hover:shadow-md;
+  }
+
+  .stat-card {
+    @apply panel-card overflow-hidden;
+  }
+
+  .stat-card-inner {
+    @apply relative p-6;
+  }
+
+  .stat-card-inner::before {
+    content: "";
+    @apply absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/80 to-primary/30;
+  }
+
+  .stat-label {
+    @apply text-sm font-medium text-muted-foreground;
+  }
+
+  .stat-value {
+    @apply mt-2 text-3xl font-bold tabular-nums text-foreground;
+  }
+
+  /* —— Tabelas —— */
+  .data-table-wrap {
+    @apply overflow-hidden rounded-lg border border-border/80;
+  }
+
+  .data-table {
+    @apply w-full text-sm;
+  }
+
+  .data-table thead {
+    @apply bg-muted/60;
+  }
+
+  .data-table th {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground;
+  }
+
+  .data-table td {
+    @apply px-4 py-4 align-middle;
+  }
+
+  .data-table tbody tr {
+    @apply border-t border-border/60 transition-colors hover:bg-muted/40;
+  }
+
+  /* —— Formulários —— */
+  .form-root {
+    @apply space-y-8;
+  }
+
+  .form-grid {
+    @apply grid gap-5 sm:grid-cols-2;
+  }
+
+  .form-field {
+    @apply space-y-2;
+  }
+
+  .form-field-full {
+    @apply form-field sm:col-span-2;
+  }
+
+  .form-section {
+    @apply rounded-xl border border-border/80 bg-muted/20 p-5 md:p-6;
+  }
+
+  .form-section-title {
+    @apply mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground;
+  }
+
+  .form-toggle-row {
+    @apply flex items-center justify-between gap-4 rounded-xl border border-border/80 bg-card p-4 shadow-sm sm:col-span-2;
+  }
+
+  .form-actions {
+    @apply flex flex-wrap gap-3 border-t border-border/60 pt-6;
+  }
+
+  /* —— Listas —— */
+  .list-row {
+    @apply flex flex-col gap-3 border-b border-border/60 py-4 transition-colors last:border-0 hover:bg-muted/20 sm:flex-row sm:items-center sm:justify-between sm:px-2 sm:first:pt-0;
+  }
+
+  /* —— Estados vazios —— */
+  .empty-state {
+    @apply flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border bg-muted/20 px-6 py-12 text-center;
+  }
+
+  .empty-state-icon {
+    @apply flex h-14 w-14 items-center justify-center rounded-full bg-muted text-muted-foreground;
+  }
+
+  /* —— Auth —— */
+  .auth-panel {
+    @apply relative flex w-full flex-1 items-center justify-center bg-gradient-to-br from-background via-background to-accent/30 p-6 lg:w-1/2;
+  }
+
+  .auth-card {
+    @apply w-full max-w-md rounded-2xl border-0 bg-card shadow-xl ring-1 ring-border/60;
+  }
+
+  .auth-hero {
+    @apply relative hidden w-1/2 flex-col justify-between overflow-hidden bg-gradient-to-br from-primary via-primary to-orange-600 p-12 text-primary-foreground lg:flex;
+  }
+
+  .auth-hero-pattern {
+    @apply pointer-events-none absolute inset-0 opacity-10;
+    background-image: radial-gradient(
+      circle at 2px 2px,
+      white 1px,
+      transparent 0
+    );
+    background-size: 24px 24px;
+  }
+
+  /* —— Sidebar nav —— */
+  .nav-link {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200;
+  }
+
+  .nav-link-active {
+    @apply bg-primary text-primary-foreground shadow-md shadow-primary/25;
+  }
+
+  .nav-link-inactive {
+    @apply text-muted-foreground hover:bg-accent hover:text-accent-foreground;
+  }
+}

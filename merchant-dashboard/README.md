@@ -2,18 +2,34 @@
 
 Painel web para merchants gerirem lojas e produtos numa plataforma multi-loja de entrega de comida.
 
-**Stack:** Next.js 15, React 19, Tailwind CSS, componentes estilo ShadCN UI.
+**Stack:** Next.js 15, React 19, Tailwind CSS, componentes estilo ShadCN UI, Supabase Auth.
 
 ## Funcionalidades (layout UI)
 
 | Área | Rotas |
 |------|--------|
-| **Autenticação** | `/login`, `/signup` — registo, entrada e saída (logout no menu) |
+| **Autenticação** | `/login`, `/signup` — registo, entrada e saída com Supabase Auth |
 | **Dashboard** | `/dashboard` — resumo |
 | **Lojas** | `/dashboard/stores` — listar, criar (`/new`), editar (`/[id]`) |
 | **Produtos** | `/dashboard/stores/[id]/products` — CRUD por loja |
 
 Os formulários e tabelas usam dados mock em `src/lib/mock-data.ts`. Ligue depois à API com filtro por `merchant_id` (ver `Database/Schema.sql`).
+
+## Configurar Supabase Auth
+
+1. No Supabase, ative **Email/Password** em Authentication > Providers.
+2. Copie `.env.example` para `.env.local`.
+3. Preencha:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
+
+4. Em Authentication > URL Configuration, adicione:
+   - Site URL: `http://localhost:3000`
+
+Com isso, `/dashboard/*` fica protegido por middleware e por verificação de sessão no layout.
 
 ## Instalar dependências
 
@@ -91,6 +107,5 @@ src/
 
 ## Próximos passos
 
-- API backend (auth JWT/sessão, CRUD com `merchant_id`)
-- Middleware Next.js para proteger `/dashboard/*`
+- CRUD real de lojas/produtos em Supabase (RLS por `merchant_id`)
 - Substituir mock por `fetch` / React Query

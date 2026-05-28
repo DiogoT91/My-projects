@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +17,38 @@ import {
 
 export default function LoginPage() {
   const router = useRouter();
+  const supabase = createClient();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const form = new FormData(e.currentTarget);
+    const email = form.get("email") as string;
+    const password = form.get("password") as string;
+
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        setError(signInError.message);
+        return;
+      }
+
+      router.refresh();
+      router.push("/dashboard");
+    } catch {
+      setError("Erro de ligação. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <Card className="auth-card">
@@ -25,13 +59,12 @@ export default function LoginPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form
-          className="space-y-5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            router.push("/dashboard");
-          }}
-        >
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          {error && (
+            <p className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              {error}
+            </p>
+          )}
           <div className="form-field">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -53,8 +86,13 @@ export default function LoginPage() {
               autoComplete="current-password"
             />
           </div>
-          <Button type="submit" className="mt-2 w-full" size="lg">
-            Entrar
+          <Button
+            type="submit"
+            className="mt-2 w-full"
+            size="lg"
+            disabled={loading}
+          >
+            {loading ? "A entrar..." : "Entrar"}
           </Button>
         </form>
         <p className="mt-6 text-center text-sm text-muted-foreground">

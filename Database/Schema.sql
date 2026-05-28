@@ -4,8 +4,13 @@
 CREATE TABLE merchant (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    -- Hash bcrypt da palavra-passe (nunca guardar texto plano)
+    password_hash VARCHAR(255) NOT NULL
 );
+
+-- Exemplo de registo (gerar hash no backend com bcrypt antes de inserir):
+-- INSERT INTO merchant (email, password_hash)
+-- VALUES ('merchant@example.com', '<hash_bcrypt_aqui>');
 
 -- =========================
 -- Tabela Store
@@ -13,13 +18,13 @@ CREATE TABLE merchant (
 CREATE TABLE store (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    street VARCHAR(255),
-    city VARCHAR(255),
-    state VARCHAR(255),
-    zip_code INTEGER,
-    phone_number BIGINT,
-    timezone VARCHAR(100),
-    active_inactive_status BOOLEAN DEFAULT TRUE,
+    street VARCHAR(255) NOT NULL,
+    city VARCHAR(255) NOT NULL,
+    state VARCHAR(255) NOT NULL,
+    zip_code INTEGER NOT NULL,
+    phone_number BIGINT NOT NULL,
+    timezone VARCHAR(100) NOT NULL,
+    active_inactive_status BOOLEAN NOT NULL DEFAULT TRUE,
 
     merchant_id INTEGER NOT NULL,
 

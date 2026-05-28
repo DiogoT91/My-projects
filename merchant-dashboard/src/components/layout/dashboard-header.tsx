@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LogOut, User } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,8 +26,11 @@ export function DashboardHeader({
   action,
 }: DashboardHeaderProps) {
   const router = useRouter();
+  const supabase = createClient();
 
-  function handleLogout() {
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    router.refresh();
     router.push("/login");
   }
 

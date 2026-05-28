@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,48 @@ import {
 
 export default function SignupPage() {
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const form = new FormData(e.currentTarget);
+    const email = form.get("email") as string;
+    const password = form.get("password") as string;
+    const confirmPassword = form.get("confirmPassword") as string;
+
+    if (password !== confirmPassword) {
+      setError("As palavras-passe não coincidem.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/admin/create-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error || "Erro ao criar conta.");
+        return;
+      }
+
+      router.push("/login");
+    } catch {
+      setError("Erro de ligação. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <Card className="auth-card">
@@ -25,13 +68,12 @@ export default function SignupPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form
-          className="space-y-5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            router.push("/dashboard");
-          }}
-        >
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          {error && (
+            <p className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              {error}
+            </p>
+          )}
           <div className="form-field">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -65,8 +107,13 @@ export default function SignupPage() {
               autoComplete="new-password"
             />
           </div>
-          <Button type="submit" className="mt-2 w-full" size="lg">
-            Criar conta
+          <Button
+            type="submit"
+            className="mt-2 w-full"
+            size="lg"
+            disabled={loading}
+          >
+            {loading ? "A criar conta..." : "Criar conta"}
           </Button>
         </form>
         <p className="mt-6 text-center text-sm text-muted-foreground">

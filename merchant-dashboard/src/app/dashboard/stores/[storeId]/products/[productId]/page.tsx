@@ -8,7 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getStoreById, getProductsForStore } from "@/lib/mock-data";
+import {
+  getProductById,
+  getStoreByIdForMerchant,
+} from "@/lib/supabase/db";
 
 type PageProps = {
   params: Promise<{ storeId: string; productId: string }>;
@@ -17,15 +20,13 @@ type PageProps = {
 export default async function EditProductPage({ params }: PageProps) {
   const { storeId, productId } = await params;
   const storeIdNum = Number(storeId);
-  const store = getStoreById(storeIdNum);
+  const store = await getStoreByIdForMerchant(storeIdNum);
 
   if (!store) {
     notFound();
   }
 
-  const product = getProductsForStore(storeIdNum).find(
-    (p) => p.id === Number(productId)
-  );
+  const product = await getProductById(storeIdNum, Number(productId));
 
   if (!product) {
     notFound();

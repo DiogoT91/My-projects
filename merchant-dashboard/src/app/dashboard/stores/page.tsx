@@ -10,10 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getStoresForMerchant, MOCK_MERCHANT_ID } from "@/lib/mock-data";
+import { getStoresForMerchant } from "@/lib/supabase/db";
 
-export default function StoresPage() {
-  const stores = getStoresForMerchant(MOCK_MERCHANT_ID);
+export default async function StoresPage() {
+  const stores = await getStoresForMerchant();
 
   return (
     <>

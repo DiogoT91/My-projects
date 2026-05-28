@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,13 +34,68 @@ export function StoreForm({
   store,
   submitLabel = "Guardar loja",
 }: StoreFormProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const isEdit = !!store?.id;
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const form = new FormData(e.currentTarget);
+    const name = form.get("name") as string;
+    const street = form.get("street") as string;
+    const city = form.get("city") as string;
+    const state = form.get("state") as string;
+    const zipCode = form.get("zipCode") as string;
+    const phoneNumber = form.get("phoneNumber") as string;
+    const timezone = form.get("timezone") as string;
+    const active = form.get("active") === "on";
+
+    try {
+      const response = await fetch(
+        isEdit ? `/api/stores/${store?.id}` : "/api/stores",
+        {
+          method: isEdit ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            street,
+            city,
+            state,
+            zipCode,
+            phoneNumber,
+            timezone,
+            active,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Erro ao gravar loja");
+      }
+
+      router.push("/dashboard/stores");
+    } catch (err) {
+      setError((err as Error).message || "Erro ao gravar loja.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <form
-      className="form-root"
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
+    <form className="form-root" onSubmit={handleSubmit}>
+      {error && (
+        <p className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {error}
+        </p>
+      )}
       <div className="form-section">
         <p className="form-section-title">Informação geral</p>
         <div className="form-grid">

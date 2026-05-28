@@ -13,14 +13,16 @@ import { Badge } from "@/components/ui/badge";
 import {
   getStoresForMerchant,
   getProductsForStore,
-  MOCK_MERCHANT_ID,
-} from "@/lib/mock-data";
+} from "@/lib/supabase/db";
 
-export default function DashboardPage() {
-  const stores = getStoresForMerchant(MOCK_MERCHANT_ID);
+export default async function DashboardPage() {
+  const stores = await getStoresForMerchant();
+  const productsByStore = await Promise.all(
+    stores.map((store) => getProductsForStore(store.id))
+  );
   const activeStores = stores.filter((s) => s.active).length;
-  const totalProducts = stores.reduce(
-    (acc, s) => acc + getProductsForStore(s.id).length,
+  const totalProducts = productsByStore.reduce(
+    (acc, products) => acc + products.length,
     0
   );
 

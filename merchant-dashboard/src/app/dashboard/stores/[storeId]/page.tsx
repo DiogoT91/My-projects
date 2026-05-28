@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getStoreById } from "@/lib/mock-data";
+import { getStoreByIdForMerchant } from "@/lib/supabase/db";
 
 type PageProps = {
   params: Promise<{ storeId: string }>;
@@ -19,7 +19,7 @@ type PageProps = {
 
 export default async function EditStorePage({ params }: PageProps) {
   const { storeId } = await params;
-  const store = getStoreById(Number(storeId));
+  const store = await getStoreByIdForMerchant(Number(storeId));
 
   if (!store) {
     notFound();

@@ -14,18 +14,68 @@ type ProductFormProps = {
   submitLabel?: string;
 };
 
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 export function ProductForm({
   storeId,
   product,
   submitLabel = "Guardar produto",
 }: ProductFormProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const isEdit = !!product?.id;
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const form = new FormData(e.currentTarget);
+    const name = form.get("name") as string;
+    const description = form.get("description") as string;
+    const price = Number(form.get("price"));
+    const available = form.get("available") === "on";
+
+    try {
+      const response = await fetch(
+        isEdit ? `/api/products/${product?.id}` : "/api/products",
+        {
+          method: isEdit ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            storeId,
+            name,
+            description,
+            price,
+            available,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Erro ao gravar produto");
+      }
+
+      router.push(`/dashboard/stores/${storeId}/products`);
+    } catch (err) {
+      setError((err as Error).message || "Erro ao gravar produto.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <form
-      className="form-root"
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
+    <form className="form-root" onSubmit={handleSubmit}>
+      {error && (
+        <p className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {error}
+        </p>
+      )}
       <input type="hidden" name="storeId" value={storeId} />
 
       <div className="form-section">

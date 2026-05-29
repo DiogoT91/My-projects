@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -51,7 +52,26 @@ export default function SignupPage() {
         return;
       }
 
-      router.push("/login");
+      // Após criar o utilizador no servidor, iniciar sessão automaticamente
+      try {
+        const supabase = createClient();
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (signInError) {
+          // Se não for possível iniciar sessão automaticamente, ir para a página de login
+          setError(signInError.message || "Conta criada. Inicie sessão manualmente.");
+          router.push("/login");
+          return;
+        }
+
+        router.refresh();
+        router.push("/dashboard");
+      } catch (err) {
+        router.push("/login");
+      }
     } catch {
       setError("Erro de ligação. Tente novamente.");
     } finally {

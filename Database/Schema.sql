@@ -21,7 +21,7 @@ CREATE TABLE store (
     street VARCHAR(255) NOT NULL,
     city VARCHAR(255) NOT NULL,
     state VARCHAR(255) NOT NULL,
-    zip_code INTEGER NOT NULL,
+    zip_code VARCHAR(255) NULL,
     phone_number BIGINT NOT NULL,
     timezone VARCHAR(100) NOT NULL,
     active_inactive_status BOOLEAN NOT NULL DEFAULT TRUE,

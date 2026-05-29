@@ -8,7 +8,7 @@ VALUES
 ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO store (name, street, city, state, zip_code, phone_number, timezone, merchant_id)
-SELECT 'Loja Exemplo', 'Rua Central 123', 'Lisboa', 'Lisboa', '1000-100', 912345678, 'Europe/Lisbon', m.id
+SELECT 'Loja Exemplo', 'Rua Central 123', 'Lisboa', 'Lisboa', '1000-100', '+351 912 345 678', 'Europe/Lisbon', m.id
 FROM merchant m
 WHERE m.email = 'merchant@example.com'
   AND NOT EXISTS (
@@ -16,7 +16,7 @@ WHERE m.email = 'merchant@example.com'
   );
 
 INSERT INTO store (name, street, city, state, zip_code, phone_number, timezone, merchant_id)
-SELECT 'Loja Nova 1', 'Avenida Principal 45', 'Porto', 'Porto', '4000-200', 913000111, 'Europe/Lisbon', m.id
+SELECT 'Loja Nova 1', 'Avenida Principal 45', 'Porto', 'Porto', '4000-200', '+351 913 000 111', 'Europe/Lisbon', m.id
 FROM merchant m
 WHERE m.email = 'merchant2@example.com'
   AND NOT EXISTS (
@@ -24,7 +24,7 @@ WHERE m.email = 'merchant2@example.com'
   );
 
 INSERT INTO store (name, street, city, state, zip_code, phone_number, timezone, merchant_id)
-SELECT 'Loja Nova 2', 'Rua da Praia 78', 'Faro', 'Faro', '8000-300', 914000222, 'Europe/Lisbon', m.id
+SELECT 'Loja Nova 2', 'Rua da Praia 78', 'Faro', 'Faro', '8000-300', '+351 914 000 222', 'Europe/Lisbon', m.id
 FROM merchant m
 WHERE m.email = 'merchant2@example.com'
   AND NOT EXISTS (

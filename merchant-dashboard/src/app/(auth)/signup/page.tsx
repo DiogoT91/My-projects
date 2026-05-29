@@ -26,9 +26,22 @@ export default function SignupPage() {
     setLoading(true);
 
     const form = new FormData(e.currentTarget);
-    const email = form.get("email") as string;
+    const email = (form.get("email") as string)?.trim();
     const password = form.get("password") as string;
     const confirmPassword = form.get("confirmPassword") as string;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      setError("Insira um email válido.");
+      setLoading(false);
+      return;
+    }
+
+    if (!password || password.length < 8) {
+      setError("A palavra-passe deve ter pelo menos 8 caracteres.");
+      setLoading(false);
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("As palavras-passe não coincidem.");

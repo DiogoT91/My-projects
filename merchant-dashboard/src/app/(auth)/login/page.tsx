@@ -27,8 +27,21 @@ export default function LoginPage() {
     setLoading(true);
 
     const form = new FormData(e.currentTarget);
-    const email = form.get("email") as string;
+    const email = (form.get("email") as string)?.trim();
     const password = form.get("password") as string;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      setError("Insira um email válido.");
+      setLoading(false);
+      return;
+    }
+
+    if (!password) {
+      setError("Insira a palavra-passe.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const { error: signInError } = await supabase.auth.signInWithPassword({

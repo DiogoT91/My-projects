@@ -45,14 +45,59 @@ export function StoreForm({
     setLoading(true);
 
     const form = new FormData(e.currentTarget);
-    const name = form.get("name") as string;
-    const street = form.get("street") as string;
-    const city = form.get("city") as string;
-    const state = form.get("state") as string;
-    const zipCode = form.get("zipCode") as string;
-    const phoneNumber = form.get("phoneNumber") as string;
-    const timezone = form.get("timezone") as string;
+    const name = (form.get("name") as string)?.trim();
+    const street = (form.get("street") as string)?.trim();
+    const city = (form.get("city") as string)?.trim();
+    const state = (form.get("state") as string)?.trim();
+    const zipCode = (form.get("zipCode") as string)?.trim();
+    const phoneNumber = (form.get("phoneNumber") as string)?.trim();
+    const timezone = (form.get("timezone") as string)?.trim();
     const active = form.get("active") === "on";
+
+    const phoneRegex = /^\+?[0-9\s-]{7,20}$/;
+    const zipRegex = /^[0-9]{4}-?[0-9]{3}$/;
+
+    if (!name || name.length < 3) {
+      setError("O nome da loja deve ter pelo menos 3 caracteres.");
+      setLoading(false);
+      return;
+    }
+
+    if (!street) {
+      setError("Insira a rua da loja.");
+      setLoading(false);
+      return;
+    }
+
+    if (!city) {
+      setError("Insira a cidade da loja.");
+      setLoading(false);
+      return;
+    }
+
+    if (!state) {
+      setError("Insira o distrito/estado da loja.");
+      setLoading(false);
+      return;
+    }
+
+    if (!phoneNumber || !phoneRegex.test(phoneNumber)) {
+      setError("Insira um número de telefone válido.");
+      setLoading(false);
+      return;
+    }
+
+    if (zipCode && !zipRegex.test(zipCode)) {
+      setError("Insira um código postal com o formato 1000-100.");
+      setLoading(false);
+      return;
+    }
+
+    if (!timezone) {
+      setError("Selecione um fuso horário.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -122,17 +167,18 @@ export function StoreForm({
               name="street"
               defaultValue={store?.street}
               placeholder="Rua, número"
+              required
             />
           </div>
 
           <div className="form-field">
             <Label htmlFor="city">Cidade</Label>
-            <Input id="city" name="city" defaultValue={store?.city} />
+            <Input id="city" name="city" defaultValue={store?.city} required />
           </div>
 
           <div className="form-field">
             <Label htmlFor="state">Distrito / Estado</Label>
-            <Input id="state" name="state" defaultValue={store?.state} />
+            <Input id="state" name="state" defaultValue={store?.state} required />
           </div>
 
           <div className="form-field">
@@ -142,6 +188,8 @@ export function StoreForm({
               name="zipCode"
               defaultValue={store?.zipCode}
               placeholder="1000-001"
+              pattern="[0-9]{4}-?[0-9]{3}"
+              title="Formato 1000-100"
             />
           </div>
 
@@ -153,6 +201,9 @@ export function StoreForm({
               type="tel"
               defaultValue={store?.phoneNumber}
               placeholder="+351 912 345 678"
+              required
+              pattern="\+?[0-9\s-]{7,20}"
+              title="Insira um telefone válido com dígitos e opcionalmente +, espaços ou hífens"
             />
           </div>
         </div>
@@ -166,6 +217,7 @@ export function StoreForm({
             <Select
               name="timezone"
               defaultValue={store?.timezone ?? "Europe/Lisbon"}
+              required
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecionar fuso horário" />

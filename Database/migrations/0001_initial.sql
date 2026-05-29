@@ -4,7 +4,7 @@ BEGIN;
 CREATE TABLE IF NOT EXISTS merchant (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS store (
     city VARCHAR(255) NOT NULL,
     state VARCHAR(255) NOT NULL,
     zip_code VARCHAR(255),
-    phone_number BIGINT NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
     timezone VARCHAR(100) NOT NULL,
     active_inactive_status BOOLEAN NOT NULL DEFAULT TRUE,
     merchant_id INTEGER NOT NULL,

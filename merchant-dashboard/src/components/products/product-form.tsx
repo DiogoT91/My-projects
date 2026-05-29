@@ -33,10 +33,22 @@ export function ProductForm({
     setLoading(true);
 
     const form = new FormData(e.currentTarget);
-    const name = form.get("name") as string;
+    const name = (form.get("name") as string)?.trim();
     const description = form.get("description") as string;
     const price = Number(form.get("price"));
     const available = form.get("available") === "on";
+
+    if (!name || name.length < 2) {
+      setError("O nome do produto deve ter pelo menos 2 caracteres.");
+      setLoading(false);
+      return;
+    }
+
+    if (Number.isNaN(price) || price <= 0) {
+      setError("Insira um preço válido e superior a 0.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -89,6 +101,7 @@ export function ProductForm({
               defaultValue={product?.name}
               placeholder="Ex: Pizza Margherita"
               required
+              minLength={2}
             />
           </div>
 
@@ -110,7 +123,7 @@ export function ProductForm({
               name="price"
               type="number"
               step="0.01"
-              min="0"
+              min="0.01"
               defaultValue={product?.price}
               placeholder="9.50"
               required

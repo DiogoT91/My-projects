@@ -1,0 +1,7 @@
+Usei Next.js com uma estrutura modular para manter a aplicação organizada e fácil de expandir, separando claramente a UI dos dados e das APIs.
+
+Para a escalabilidade, tive cuidado em estruturar src/app, src/components e src/lib de forma a poder adicionar mais stores e products sem rever grande parte do código, mantendo a lógica de cada peça isolada.
+
+Na segurança, apoiei-me em Supabase Auth para autenticação e em RLS no PostgreSQL para garantir que cada merchant só acede aos seus próprios dados, com merchant.auth_user_id a ligar a conta de login ao comerciante.
+
+Quanto às regras de negócio, deixei-as simples e consistentes: o merchant é sempre associado ao auth_user_id, as queries filtram por proprietário, os formulários validam campos essenciais e o signup redireciona logo para a dashboard para uma experiência mais fluida.

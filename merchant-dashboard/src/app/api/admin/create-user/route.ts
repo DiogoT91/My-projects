@@ -44,10 +44,12 @@ export async function POST(req: Request) {
       );
     }
 
+    const userId = data?.user?.id;
     const { error: merchantError } = await supabaseAdmin.from("merchant").insert([
       {
         email,
         password: passwordHash,
+        auth_user_id: userId,
       },
     ]);
 

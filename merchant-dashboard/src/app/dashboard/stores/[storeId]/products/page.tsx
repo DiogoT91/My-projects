@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Plus, ArrowLeft, Package } from "lucide-react";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -73,11 +73,15 @@ export default async function StoreProductsPage({ params }: PageProps) {
                   <p className="text-muted-foreground">
                     Esta loja ainda não tem produtos.
                   </p>
-                  <Button asChild>
-                    <Link href={`/dashboard/stores/${id}/products/new`}>
-                      Adicionar produto
-                    </Link>
-                  </Button>
+                  <Link
+                    href={`/dashboard/stores/${id}/products/new`}
+                    className={buttonVariants({
+                      variant: "default",
+                      size: "default",
+                    })}
+                  >
+                    Adicionar produto
+                  </Link>
                 </div>
               ) : (
                 <div className="data-table-wrap">

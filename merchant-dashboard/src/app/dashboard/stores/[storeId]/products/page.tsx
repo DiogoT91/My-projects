@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Plus, Pencil, Trash2, ArrowLeft, Package } from "lucide-react";
+import { Plus, ArrowLeft, Package } from "lucide-react";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ import {
   getProductsForStore,
   getStoreByIdForMerchant,
 } from "@/lib/supabase/db";
+import { ProductActions } from "@/components/products/product-actions";
 
 type PageProps = {
   params: Promise<{ storeId: string }>;
@@ -110,24 +111,8 @@ export default async function StoreProductsPage({ params }: PageProps) {
                             </Badge>
                           </td>
                           <td className="text-right">
-                            <div className="flex justify-end gap-2">
-                              <Button variant="outline" size="sm" asChild>
-                                <Link
-                                  href={`/dashboard/stores/${id}/products/${product.id}`}
-                                >
-                                  <Pencil className="h-4 w-4" />
-                                  Editar
-                                </Link>
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                                Remover
-                              </Button>
-                            </div>
+                            {/* Product actions handled in client component */}
+                            <ProductActions product={product} storeId={id} />
                           </td>
                         </tr>
                       ))}
